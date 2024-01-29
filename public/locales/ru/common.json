@@ -1,0 +1,157 @@
+{
+  "pages": {
+    "login": {
+      "title": "Войдите в свой аккаунт",
+      "signin": "Войти",
+      "signup": "Выйти",
+      "divider": "или",
+      "fields": {
+        "email": "Login",
+        "password": "Пароль"
+      },
+      "errors": {
+        "validEmail": "Некорректный email-адрес"
+      },
+      "buttons": {
+        "submit": "Войти",
+        "forgotPassword": "Забыли пароль?",
+        "noAccount": "Вы здесь впервые?",
+        "rememberMe": "Запомни меня"
+      }
+    },
+    "forgotPassword": {
+      "title": "Забыли пароль?",
+      "fields": {
+        "email": "Email"
+      },
+      "errors": {
+        "validEmail": "Некорректный email-адрес"
+      },
+      "buttons": {
+        "submit": "Инструкции отправлены по почте"
+      }
+    },
+    "register": {
+      "title": "Войти в аккаунт",
+      "fields": {
+        "email": "Имя пользователя",
+        "password": "Пароль"
+      },
+      "errors": {
+        "validEmail": "Некорректное имя пользователя"
+      },
+      "buttons": {
+        "submit": "Зарегистрироваться",
+        "haveAccount": "Есть аккаунт?"
+      }
+    },
+    "updatePassword": {
+      "title": "Обновить пароль",
+      "fields": {
+        "password": "Новый пароль",
+        "confirmPassword": "Подтвердите пароль"
+      },
+      "errors": {
+        "confirmPasswordNotMatch": "Пароли не совпадают"
+      },
+      "buttons": {
+        "submit": "Создать новый пароль"
+      }
+    },
+    "error": {
+      "info": "You may have forgotten to add the {{action}} component to {{resource}} resource.",
+      "404": "К сожалению, страница, которую вы посетили, не существует.",
+      "resource404": "Are you sure you have created the {{resource}} resource.",
+      "backHome": "Вернуться домой"
+    }
+  },
+  "actions": {
+    "list": "List",
+    "create": "Создать",
+    "edit": "Редактировать",
+    "show": "Показать"
+  },
+  "buttons": {
+    "create": "Создать",
+    "save": "Сохранить",
+    "logout": "Выйти",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "cancel": "Отменить",
+    "confirm": "Вы уверены?",
+    "filter": "Фильтровать",
+    "clear": "Очистить",
+    "refresh": "Обновить",
+    "show": "Показать",
+    "undo": "Отменить",
+    "import": "Импортировать",
+    "clone": "Дублировать",
+    "notAccessTitle": "У вас нет разрешения на доступ"
+  },
+  "warnWhenUnsavedChanges": "Вы уверены, что хотите выйти? У вас есть несохраненные изменения.",
+  "notifications": {
+    "success": "Успешно",
+    "error": "Error (status code: {{statusCode}})",
+    "undoable": "You have {{seconds}} seconds to undo",
+    "createSuccess": "Успешно создано",
+    "createError": "Ошибка при создании (код статуса: {{statusCode}})",
+    "deleteSuccess": "Удаление прошло успешно",
+    "deleteError": "Ошибка при удалении (код статуса: {{statusCode}})",
+    "editSuccess": "Изменение прошло успешно",
+    "editError": "Ошибка при редактировании (код статуса: {{statusCode}})",
+    "importProgress": "Importing: {{processed}}/{{total}}"
+  },
+  "loading": "Загружается",
+  "tags": {
+    "clone": "Clone"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "users": {
+    "users": "Пользователи",
+    "fields": {
+      "id": "Id",
+      "lastname": "фамилия",
+      "firstname": "имя",
+      "city": "город",
+      "birthday": "дата рождения"
+    },
+    "titles": {
+      "create": "Создать пользователя",
+      "edit": "Редактировать пользователя",
+      "list": "Пользователи",
+      "show": "Показать пользователя"
+    }
+  },
+  "admins": {
+    "admins": "Администраторы",
+    "fields": {
+      "id": "id",
+      "firstname": "имя",
+      "lastname": "фамилия",
+      "midname": "отчество",
+      "email": "почта",
+      "phone": "телефон",
+      "birthday": "дата рождения"
+    },
+    "titles": {
+      "create": "Создать администратора",
+      "edit": "Редактировать администратора",
+      "list": "Администраторы",
+      "show": "Показать администратора"
+    }
+  },
+  "events": {
+    "admins": "События",
+    "titles": {
+      "create": "Создать событие",
+      "edit": "Редактировать событие",
+      "list": "События",
+      "show": "Показать событие"
+    }
+  },
+  "table": {
+    "actions": "Действия"
+  }
+}
