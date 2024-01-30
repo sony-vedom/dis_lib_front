@@ -1,60 +1,68 @@
 import nookies from "nookies";
-import axios, {AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {AuthBindingsCustom, ILoginData, ILoginVar} from "./type";
-
-
-export const COOKIE_AUTH = 'auth'
-export const COOKIE_AUTH_REFRESH = 'auth_refresh'
+import createAuthRefreshInterceptor from "axios-auth-refresh";
+import {COOKIE_AUTH_ACCESS, COOKIE_AUTH_REFRESH} from "src/utils/Cookies";
 
 export const authProvider: AuthBindingsCustom = {
     login: async ({email, password}) => {
+        try {
+            const {
+                data: {
+                    refresh,
+                    access
+                },
+            } = await axios.post<ILoginData, AxiosResponse<ILoginData>, ILoginVar>(`${process.env.NEXT_PUBLIC_LIB_API_URL}/token/`, {
+                username: email,
+                password,
+            })
 
-        const {
-            data: {
-                refresh,
-                access
-            },
-        } = await axios.post<ILoginData, AxiosResponse<ILoginData>, ILoginVar>(`${process.env.NEXT_PUBLIC_LIB_API_URL}/token/`, {
-            username: email,
-            password,
-        })
 
-        if (refresh && access) {
-            nookies.set(null, COOKIE_AUTH, refresh);
-            nookies.set(null, COOKIE_AUTH_REFRESH, access);
+
+            if (refresh && access) {
+                nookies.set(null, COOKIE_AUTH_REFRESH, refresh);
+                nookies.set(null, COOKIE_AUTH_ACCESS, access);
+                return {
+                    success: true,
+                    redirectTo: "/",
+                };
+            }
+
             return {
-                success: true,
-                redirectTo: "/",
+                success: false,
+                error: {
+                    name: "Ошибка ввода",
+                    message: "Некорректное имя пользовательвателя или пароль",
+                },
+            };
+        } catch (e) {
+            return {
+                success: false,
+                error: {
+                    name: "Ошибка ввода",
+                    message: "Некорректное имя пользовательвателя или пароль",
+                },
             };
         }
-
-        return {
-            success: false,
-            error: {
-                name: "LoginError",
-                message: "Invalid username or password",
-            },
-        };
     },
     refresh: async () => {
         const {
             data: {
-                refresh,
                 access
             },
-        }= await axios.post<ILoginData>(`${process.env.NEXT_PUBLIC_LIB_API_URL}/refresh`, null, {
+        } = await axios.post<ILoginData>(`${process.env.NEXT_PUBLIC_LIB_API_URL}/token/refresh/`, {
+            "refresh": nookies.get(null)?.[COOKIE_AUTH_REFRESH]
+        }, {
             headers: {
-                'refresh-token': nookies.get(null)?.[COOKIE_AUTH_REFRESH],
-            },
+                "Content-Type": "application/json"
+            }
         })
-
-        if (access && refresh) {
-            nookies.set(null, COOKIE_AUTH, access);
+        if (access) {
             nookies.set(null, COOKIE_AUTH_REFRESH, access);
         }
     },
     logout: async () => {
-        nookies.destroy(null, COOKIE_AUTH);
+        nookies.destroy(null, COOKIE_AUTH_ACCESS);
         nookies.destroy(null, COOKIE_AUTH_REFRESH);
         return {
             success: true,
@@ -63,7 +71,7 @@ export const authProvider: AuthBindingsCustom = {
     },
     check: async (ctx: any) => {
         const cookies = nookies.get(ctx);
-        if (cookies[COOKIE_AUTH]) {
+        if (cookies[COOKIE_AUTH_ACCESS]) {
             return {
                 authenticated: true,
             };
@@ -91,7 +99,6 @@ export const authProvider: AuthBindingsCustom = {
         // return null;
     },
     onError: async (error) => {
-        console.error(error);
         return {error};
     },
 };

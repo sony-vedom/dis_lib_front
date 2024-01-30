@@ -54,8 +54,8 @@ export default function Login() {
                     align="center"
                     sx={{
                         textAlign: "center",
-                        fontSize: "24px",
-                        marginBottom: "24px",
+                        fontSize: "20px",
+                        marginBottom: "20px",
                         overflowWrap: "break-word",
                         hyphens: "manual",
                         textOverflow: "unset",
@@ -66,7 +66,7 @@ export default function Login() {
                 >
                     <ThemedTitleV2
                         collapsed={false}
-                        text="Библиотека параметров"
+                        text="Библиотека бурильных труб и дополнительного оборудования предназначеного для бурения"
                         icon={<AppIcon/>}
                     />
                 </Typography>

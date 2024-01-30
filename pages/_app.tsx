@@ -1,15 +1,7 @@
-import {
-    ThemedLayoutV2,
-    ThemedSiderV2,
-    useNotificationProvider,
-} from "@refinedev/antd";
-import {GitHubBanner, Refine} from "@refinedev/core";
+import {Refine} from "@refinedev/core";
 import {DevtoolsPanel, DevtoolsProvider} from "@refinedev/devtools";
 import {RefineKbar, RefineKbarProvider} from "@refinedev/kbar";
-import routerProvider, {
-    DocumentTitleHandler,
-    UnsavedChangesNotifier,
-} from "@refinedev/nextjs-router";
+import routerProvider, {DocumentTitleHandler, UnsavedChangesNotifier,} from "@refinedev/nextjs-router";
 import type {NextPage} from "next";
 import {AppProps} from "next/app";
 import {Header} from "@components/header";
@@ -19,6 +11,9 @@ import {App as AntdApp} from "antd";
 import {authProvider} from "src/authProvider";
 import {dataProvider} from "src/dataProvider";
 import {appWithTranslation, useTranslation} from "next-i18next";
+import {notificationProvider, RefineSnackbarProvider, ThemedLayoutV2, ThemedTitleV2} from "@refinedev/mui";
+import {AppIcon} from "@components/app-icon";
+import {CssBaseline, GlobalStyles} from "@mui/material";
 
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -40,58 +35,76 @@ function MyApp({Component, pageProps}: AppPropsWithLayout): JSX.Element {
         if (Component.noLayout) {
             return <Component {...pageProps} />;
         }
+
         return (
             <ThemedLayoutV2
                 Header={() => <Header sticky/>}
-                Sider={(props) => <ThemedSiderV2 {...props} fixed/>}
+                Title={({collapsed}) => (
+                    <ThemedTitleV2
+                        collapsed={collapsed}
+                        text="Библиотека параметров"
+                        icon={<AppIcon/>}
+                    />
+                )}
             >
                 <Component {...pageProps} />
             </ThemedLayoutV2>
         );
     };
-
-
     return (
         <>
             <RefineKbarProvider>
+
                 <ColorModeContextProvider>
-                    <AntdApp>
+                    <CssBaseline/>
+                    <GlobalStyles styles={{html: {WebkitFontSmoothing: "auto"}}}/>
+                    <RefineSnackbarProvider>
                         <DevtoolsProvider>
                             <Refine
                                 routerProvider={routerProvider}
                                 dataProvider={dataProvider(process.env.NEXT_PUBLIC_LIB_API_URL ?? "")}
-                                notificationProvider={useNotificationProvider}
+                                notificationProvider={notificationProvider}
                                 authProvider={authProvider}
                                 i18nProvider={i18nProvider}
                                 resources={[
                                     {
-                                        name: "event",
-                                        list: "/event",
-                                        // create: "/blog-posts/create",
-                                        // edit: "/blog-posts/edit/:id",
-                                        // show: "/blog-posts/show/:id",
-                                        // meta: {
-                                        //   canDelete: true,
-                                        // },
-                                    },
-                                    {
-                                        name: "blog_posts",
-                                        list: "/blog-posts",
-                                        create: "/blog-posts/create",
-                                        edit: "/blog-posts/edit/:id",
-                                        show: "/blog-posts/show/:id",
+                                        name: "parameter",
+                                        list: "/parameter",
+                                        show: "/parameter/show/:id",
                                         meta: {
-                                            canDelete: true,
+                                            canCreate: false,
+                                            canEdit: false,
+                                            canDelete: false,
                                         },
                                     },
                                     {
-                                        name: "categories",
-                                        list: "/categories",
-                                        create: "/categories/create",
-                                        edit: "/categories/edit/:id",
-                                        show: "/categories/show/:id",
+                                        name: "param_elevator",
+                                        list: "/param_elevator",
+                                        show: "/param_elevator/show/:id",
                                         meta: {
-                                            canDelete: true,
+                                            canCreate: false,
+                                            canEdit: false,
+                                            canDelete: false,
+                                        },
+                                    },
+                                    {
+                                        name: "param_perevodnik",
+                                        list: "/param_perevodnik",
+                                        show: "/param_perevodnik/show/:id",
+                                        meta: {
+                                            canCreate: false,
+                                            canEdit: false,
+                                            canDelete: false,
+                                        },
+                                    },
+                                    {
+                                        name: "param_cable",
+                                        list: "/param_cable",
+                                        show: "/param_cable/show/:id",
+                                        meta: {
+                                            canCreate: false,
+                                            canEdit: false,
+                                            canDelete: false,
                                         },
                                     },
                                 ]}
@@ -108,8 +121,10 @@ function MyApp({Component, pageProps}: AppPropsWithLayout): JSX.Element {
                                 <DocumentTitleHandler/>
                             </Refine>
                             <DevtoolsPanel/>
+
                         </DevtoolsProvider>
-                    </AntdApp>
+                    </RefineSnackbarProvider>
+
                 </ColorModeContextProvider>
             </RefineKbarProvider>
         </>
