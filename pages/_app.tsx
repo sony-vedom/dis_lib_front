@@ -54,7 +54,6 @@ function MyApp({Component, pageProps}: AppPropsWithLayout): JSX.Element {
     return (
         <>
             <RefineKbarProvider>
-
                 <ColorModeContextProvider>
                     <CssBaseline/>
                     <GlobalStyles styles={{html: {WebkitFontSmoothing: "auto"}}}/>

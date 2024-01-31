@@ -45,7 +45,8 @@ export const authProvider: AuthBindingsCustom = {
             };
         }
     },
-    refresh: async () => {
+    refresh: async (responseUrl) => {
+        console.log(nookies.get(null))
         const {
             data: {
                 access

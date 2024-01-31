@@ -1,7 +1,7 @@
 import { AuthBindings } from "@refinedev/core";
 
 export interface AuthBindingsCustom extends AuthBindings {
-  refresh: () => void;
+  refresh: (responseUrl: string) => void;
 }
 
 export interface ILoginVar {
