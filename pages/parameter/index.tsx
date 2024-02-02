@@ -2,7 +2,7 @@ import {GetServerSideProps} from "next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "src/authProvider";
 import React from "react";
-import {DateField, List, ShowButton, useDataGrid,} from "@refinedev/mui";
+import {DateField, List, ShowButton, useDataGrid,BooleanField} from "@refinedev/mui";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {IResourceComponentsProps, useTranslate} from "@refinedev/core";
 import {Checkbox} from "@mui/material";
@@ -39,16 +39,20 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
                 field: "reinforcement",
                 headerName: translate("parameter.fields.reinforcement"),
                 minWidth: 200,
+                // @ts-ignore
                 renderCell: function render({value}) {
-                    return <Checkbox checked={!!value}/>;
+                    // @ts-ignore
+                    return <BooleanField sx={{justifySelf: "end"}} value={!!value}/>;
                 },
             },
             {
                 field: "internal_coating",
                 headerName: translate("parameter.fields.internal_coating"),
                 minWidth: 100,
+                // @ts-ignore
                 renderCell: function render({value}) {
-                    return <Checkbox checked={!!value}/>;
+                    // @ts-ignore
+                    return  <BooleanField sx={{justifySelf: "end"}} value={!!value}/>;
                 },
             },
             {
@@ -156,7 +160,7 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
 
     return (
         <List>
-            <DataGrid {...dataGridProps} columns={columns} autoHeight/>
+            <DataGrid checkboxSelection {...dataGridProps} columns={columns} autoHeight/>
         </List>
     );
 };

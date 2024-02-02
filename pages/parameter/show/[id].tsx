@@ -2,9 +2,27 @@ import {GetServerSideProps} from "next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "src/authProvider";
 import {IResourceComponentsProps, useShow, useTranslate,} from "@refinedev/core";
-import {BooleanField, DateField, NumberField, Show, TextFieldComponent as TextField,} from "@refinedev/mui";
+import {
+    BooleanField,
+    DateField,
+    ListButton,
+    NumberField,
+    RefreshButton,
+    Show,
+    TextFieldComponent as TextField,
+} from "@refinedev/mui";
 import {Stack, Typography} from "@mui/material";
+import Button from "@mui/material/Button";
+import AddIcon from '@mui/icons-material/Add';
+import axios from "axios";
 
+const fetchAddParam = (data: any) => {
+    const res = axios.post(`http://192.168.1.115:5000/api/parameter/`, {...data}).then((res) => {
+        return res
+    })
+    console.log(res)
+    return res
+}
 export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();
     const {queryResult} = useShow();
@@ -13,7 +31,11 @@ export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
     const record = data?.data;
     console.log(record?.side_square)
     return (
-        <Show isLoading={isLoading}>
+        <Show isLoading={isLoading} headerButtons={({listButtonProps, refreshButtonProps}) => <>
+            <ListButton {...listButtonProps}/><RefreshButton {...refreshButtonProps}/><Button onClick={() => {
+            fetchAddParam(data).then(r => r)
+        }}><AddIcon/>Добавить трубу в
+            Paradigma</Button></>}>
             <Stack gap={1}>
                 <Typography variant="body1" fontWeight="bold">
                     {translate("parameter.fields.nominal_pipe_diameter")}
