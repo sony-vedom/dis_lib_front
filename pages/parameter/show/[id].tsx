@@ -1,10 +1,9 @@
 import {GetServerSideProps} from "next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "src/authProvider";
-import {IResourceComponentsProps, useShow, useTranslate,} from "@refinedev/core";
+import {IResourceComponentsProps, useNotification, useShow, useTranslate,} from "@refinedev/core";
 import {
     BooleanField,
-    DateField,
     ListButton,
     NumberField,
     RefreshButton,
@@ -14,28 +13,87 @@ import {
 import {Stack, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 
-const fetchAddParam = (data: any) => {
-    const res = axios.post(`http://192.168.1.115:5000/api/parameter/`, {...data}).then((res) => {
+
+//use axios as you normally would, but specify httpsAgent in the config
+// const fetchAddParam = async (data: any) => {
+//     // const httpsAgent = new HttpsProxyAgent("http://127.0.0.1:3000")
+//     // const ax = axios.create({httpsAgent});
+//     const res = await axios.post(`${process.env.NEXT_PUBLIC_FRONT_PARADIGMA_API_URL}/redirect`, {...data}, {
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Accepts":"application/json"
+//         }
+//     }).then((res) => {
+//         return res
+//     })
+//     return res
+// }
+
+const fetchAddParam2 = async (data: any) => {
+    return await axios.post(`/api/new`, {
+        ...data,
+    }, {
+        headers: {
+            "Content-Type": "application/json",
+            "Accepts": "application/json"
+        }
+    }).then((res) => {
         return res
     })
-    console.log(res)
-    return res
 }
+
+//     const res = fetch('http://127.0.0.1:5000/api/new', {
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Accepts": "application/json"
+//         }
+//     })
+//         .then((res) => res.json())
+//         .then((data) => {
+//             return data
+//         })
+//     return res
+// }
 export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();
     const {queryResult} = useShow();
     const {data, isLoading} = queryResult;
+    const {open, close} = useNotification();
 
     const record = data?.data;
-    console.log(record?.side_square)
+    const clickHandler = () => {
+        // const asd = "weight_foot" in record ?
+        fetchAddParam2({
+            ...record,
+            lock_thread: record?.lock_th,
+            lock_type: record?.lock_ty,
+            weight_foot: record?.weight
+        }).then((res) => {
+            open?.({
+                type: "success",
+                message: "Параметры трубы добавлены в Paradigma",
+                description: res?.data?.message,
+            })
+        }).catch((e: AxiosError) => {
+            const data = JSON.parse(e.config?.data)
+            open?.({
+                type: "success",
+                // @ts-ignore
+                message: `${e?.data?.message}`,
+                description: "Ошибка добавления",
+            })
+        })
+    }
+
     return (
         <Show isLoading={isLoading} headerButtons={({listButtonProps, refreshButtonProps}) => <>
-            <ListButton {...listButtonProps}/><RefreshButton {...refreshButtonProps}/><Button onClick={() => {
-            fetchAddParam(data).then(r => r)
-        }}><AddIcon/>Добавить трубу в
-            Paradigma</Button></>}>
+            <ListButton {...listButtonProps}/><RefreshButton {...refreshButtonProps}/>
+            <Button onClick={clickHandler}>
+                <AddIcon/>Добавить трубу в Paradigma
+            </Button>
+        </>}>
             <Stack gap={1}>
                 <Typography variant="body1" fontWeight="bold">
                     {translate("parameter.fields.nominal_pipe_diameter")}

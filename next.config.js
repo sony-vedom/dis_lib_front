@@ -1,35 +1,36 @@
-const { i18n } = require("./next-i18next.config");
-const { NextFederationPlugin } = require('@module-federation/nextjs-mf');
+const {i18n} = require("./next-i18next.config");
 
-module.exports = {
-  i18n,
-  transpilePackages: ["@refinedev/nextjs-router"],
+const nextConfig = {
+    i18n,
+    transpilePackages: ["@refinedev/nextjs-router"],
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'http://localhost:3000/additional-api/:path*',
+
+            },
+            // {
+            //     source: '/ua/api/:path*',
+            //     destination: 'http://localhost:82/ua/api/:path*',
+            // },
+        ]
+    },
 };
 
-//
-//
-// const remotes = (isServer) => {
-//   const location = isServer ? 'ssr' : 'chunks';
+module.exports = nextConfig
+
+
+// module.exports = () => {
+//   const rewrites = () => {
+//     return {
+//       source: "/:path",
+//       destination: "http://127.0.0.1:3000"
+//     }
+//   }
 //   return {
-//     // specify remotes
-//     remote: `remote@http://localhost:3001/_next/static/${location}/remoteEntry.js`,
-//   };
-// }
-//
-// const nextConfig = {
-//   reactStrictMode: true,
-//   webpack(config, { isServer }) {
-//     config.plugins.push(
-//         new NextFederationPlugin({
-//           name: 'host',
-//           filename: 'static/chunks/remoteEntry.js',
-//           remotes: remotes(isServer),
-//           exposes: {
-//             // Host app also can expose modules
-//           }
-//         })
-//     );
-//
-//     return config;
-//   },
+//     i18n,
+//     transpilePackages: ["@refinedev/nextjs-router"],
+//     rewrites
+//   }
 // }
