@@ -178,7 +178,7 @@
   "parameter": {
     "parameter": "Трубы",
     "fields": {
-      "nominal_pipe_diameter": "Номинальный диаметр трубы",
+      "nominal_pipe_diameter": "Номинальный <br/> диаметр трубы",
       "reinforcement": "Армирование",
       "internal_coating": "Внутреннее покрытие",
       "weight": "Вес (кг)",

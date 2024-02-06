@@ -2,16 +2,16 @@ import {GetServerSideProps} from "next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "src/authProvider";
 import React from "react";
-import {DateField, List, ShowButton, useDataGrid,BooleanField} from "@refinedev/mui";
-import {DataGrid, GridColDef} from "@mui/x-data-grid";
+import {BooleanField, List, ShowButton, useDataGrid} from "@refinedev/mui";
+import {DataGrid, GridColDef, GridToolbar} from "@mui/x-data-grid";
 import {IResourceComponentsProps, useTranslate} from "@refinedev/core";
-import {Checkbox} from "@mui/material";
+import Box from "@mui/material/Box";
 
 export const ParameterList: React.FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();
     const {dataGridProps} = useDataGrid();
 
-    const columns = React.useMemo<GridColDef[]>(
+    const columns = React.useMemo<GridColDef<>[]>(
         () => [
             {
                 field: "actions",
@@ -26,14 +26,17 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
                 },
                 align: "center",
                 headerAlign: "center",
-                minWidth: 200,
+                maxWidth: 100,
             },
             {
                 field: "nominal_pipe_diameter",
                 flex: 1,
                 headerName: translate("parameter.fields.nominal_pipe_diameter"),
                 type: "number",
-                minWidth: 200,
+                renderHeader: function render () {
+                    return <Box sx={{lineHeight: "17px"}}>Номинальный<br/>диаметр трубы</Box>
+                },
+                maxWidth: 100,
             },
             {
                 field: "reinforcement",
@@ -160,7 +163,7 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
 
     return (
         <List>
-            <DataGrid checkboxSelection {...dataGridProps} columns={columns} autoHeight/>
+            <DataGrid {...dataGridProps} columns={columns} slots={{toolbar: GridToolbar}} autoHeight/>
         </List>
     );
 };

@@ -1,18 +1,6 @@
 import axios, {AxiosError} from "axios";
 import type {NextApiRequest, NextApiResponse} from "next";
 
-
-// export default function (req: NextApiRequest, res: NextApiResponse) {
-//     axios.get("http://127.0.0.1:3000/additional-api/redirect").then(r => {
-//         console.log(r.data)
-//     })
-//     res.status(200).send({
-//         message: "приветик"
-//     })
-//
-//
-// }
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         await axios.post("http://127.0.0.1:3000/additional-api/redirect", {...req.body}).then((r) => {
@@ -21,16 +9,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             })
         }).catch((e: AxiosError) => {
             res.status(Number(e.status)).send({
-                // @ts-ignore
-                message: e.data.message,
+                message: "data" in e ? (e.data as { message: string }).message : "Ошибка",
             })
         })
-        // res.status(200).send({
-        //     message: "приветик"
-        // })
     } else {
-        res.status(200).send({
-            message: "приветик"
+        res.status(404).send({
+            message: "Request failed with status code 404"
         })
     }
 }

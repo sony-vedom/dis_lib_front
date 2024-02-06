@@ -7,7 +7,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => (
         target: "http://127.0.0.1:3000/additional-api",
         // In addition, you can use the `pathRewrite` option provided by `next-http-proxy-middleware`
         // pathRewrite: [{
-        //     patternStr: "^/api/new",
+        //     patternStr: "^/api/parameter",
         //     replaceStr: "/v2"
         // }, {
         //     patternStr: "^/api",

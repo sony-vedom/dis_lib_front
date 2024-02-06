@@ -1,3 +1,4 @@
+import {FC} from "react";
 import {GetServerSideProps} from "next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "src/authProvider";
@@ -15,24 +16,8 @@ import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import axios, {AxiosError} from "axios";
 
-
-//use axios as you normally would, but specify httpsAgent in the config
-// const fetchAddParam = async (data: any) => {
-//     // const httpsAgent = new HttpsProxyAgent("http://127.0.0.1:3000")
-//     // const ax = axios.create({httpsAgent});
-//     const res = await axios.post(`${process.env.NEXT_PUBLIC_FRONT_PARADIGMA_API_URL}/redirect`, {...data}, {
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Accepts":"application/json"
-//         }
-//     }).then((res) => {
-//         return res
-//     })
-//     return res
-// }
-
 const fetchAddParam2 = async (data: any) => {
-    return await axios.post(`/api/new`, {
+    return await axios.post(`/api/parameters`, {
         ...data,
     }, {
         headers: {
@@ -44,19 +29,7 @@ const fetchAddParam2 = async (data: any) => {
     })
 }
 
-//     const res = fetch('http://127.0.0.1:5000/api/new', {
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Accepts": "application/json"
-//         }
-//     })
-//         .then((res) => res.json())
-//         .then((data) => {
-//             return data
-//         })
-//     return res
-// }
-export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
+export const ParameterShow: FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();
     const {queryResult} = useShow();
     const {data, isLoading} = queryResult;
@@ -64,7 +37,6 @@ export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
 
     const record = data?.data;
     const clickHandler = () => {
-        // const asd = "weight_foot" in record ?
         fetchAddParam2({
             ...record,
             lock_thread: record?.lock_th,
@@ -76,12 +48,19 @@ export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
                 message: "Параметры трубы добавлены в Paradigma",
                 description: res?.data?.message,
             })
-        }).catch((e: AxiosError) => {
-            const data = JSON.parse(e.config?.data)
+        }).catch((e: {message: string}) => {
+            const message = e.message
+            if (message === "Request failed with status code 500") {
+                open?.({
+                    type: "error",
+                    message: "Обратитесь к сотрудникам организации DIS",
+                    description: "Ошибка сервера",
+                })
+                return
+            }
             open?.({
-                type: "success",
-                // @ts-ignore
-                message: `${e?.data?.message}`,
+                type: "error",
+                message,
                 description: "Ошибка добавления",
             })
         })
@@ -91,7 +70,7 @@ export const ParameterShow: React.FC<IResourceComponentsProps> = () => {
         <Show isLoading={isLoading} headerButtons={({listButtonProps, refreshButtonProps}) => <>
             <ListButton {...listButtonProps}/><RefreshButton {...refreshButtonProps}/>
             <Button onClick={clickHandler}>
-                <AddIcon/>Добавить трубу в Paradigma
+                <AddIcon/>Добавить параметры в Paradigma
             </Button>
         </>}>
             <Stack gap={1}>
