@@ -1,18 +1,9 @@
-import {MuiShowInferencer} from "@refinedev/inferencer/mui";
-import {GetServerSideProps} from "next";
+import {IResourceComponentsProps, useShow, useTranslate,} from "@refinedev/core";
+import {NumberField, Show, TextFieldComponent as TextField,} from "@refinedev/mui";
+import {Stack, Typography} from "@mui/material";
+import {getServerSidePropsHandler} from "../../../src/shared/lib";
+import {authProvider} from "../../../src/shared/api";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {authProvider} from "src/authProvider";
-import {
-    useShow,
-    IResourceComponentsProps,
-    useTranslate,
-} from "@refinedev/core";
-import {
-    Show,
-    NumberField,
-    TextFieldComponent as TextField,
-} from "@refinedev/mui";
-import {Typography, Stack} from "@mui/material";
 
 export const ParamElevatorShow: React.FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();
@@ -54,28 +45,12 @@ export const ParamElevatorShow: React.FC<IResourceComponentsProps> = () => {
 };
 export default ParamElevatorShow
 
-export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
+export const getServerSideProps = async function (context: any) {
     const {authenticated, redirectTo} = await authProvider.check(context);
-
-    const translateProps = await serverSideTranslations(context.locale ?? "ru", [
+    const translateProps = await serverSideTranslations("ru", [
         "common",
     ]);
 
-    if (!authenticated) {
-        return {
-            props: {
-                ...translateProps,
-            },
-            redirect: {
-                destination: `${redirectTo}?to=${encodeURIComponent("/param_elevator")}`,
-                permanent: false,
-            },
-        };
-    }
+    return getServerSidePropsHandler({authenticated, redirectTo, translateProps, routeName: "param_elevator"})
+}
 
-    return {
-        props: {
-            ...translateProps,
-        },
-    };
-};

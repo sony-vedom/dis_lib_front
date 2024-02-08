@@ -1,7 +1,4 @@
 import {FC} from "react";
-import {GetServerSideProps} from "next";
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {authProvider} from "src/authProvider";
 import {IResourceComponentsProps, useNotification, useShow, useTranslate,} from "@refinedev/core";
 import {
     BooleanField,
@@ -14,7 +11,10 @@ import {
 import {Stack, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
-import axios, {AxiosError} from "axios";
+import axios from "axios";
+import {getServerSidePropsHandler} from "../../../src/shared/lib";
+import {authProvider} from "../../../src/shared/api";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 const fetchAddParam2 = async (data: any) => {
     return await axios.post(`/api/parameters`, {
@@ -48,7 +48,7 @@ export const ParameterShow: FC<IResourceComponentsProps> = () => {
                 message: "Параметры трубы добавлены в Paradigma",
                 description: res?.data?.message,
             })
-        }).catch((e: {message: string}) => {
+        }).catch((e: { message: string }) => {
             const message = e.message
             if (message === "Request failed with status code 500") {
                 open?.({
@@ -172,28 +172,11 @@ export const ParameterShow: FC<IResourceComponentsProps> = () => {
 
 export default ParameterShow
 
-export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
+export const getServerSideProps = async function (context: any) {
     const {authenticated, redirectTo} = await authProvider.check(context);
-
-    const translateProps = await serverSideTranslations(context.locale ?? "ru", [
+    const translateProps = await serverSideTranslations("ru", [
         "common",
     ]);
 
-    if (!authenticated) {
-        return {
-            props: {
-                ...translateProps,
-            },
-            redirect: {
-                destination: `${redirectTo}?to=${encodeURIComponent("/categories")}`,
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {
-            ...translateProps,
-        },
-    };
-};
+    return getServerSidePropsHandler({authenticated, redirectTo, translateProps, routeName: "parameter"})
+}

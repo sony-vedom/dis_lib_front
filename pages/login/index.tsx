@@ -1,13 +1,12 @@
 import {AuthPage, ThemedTitleV2} from "@refinedev/mui";
 import {GetServerSideProps} from "next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {authProvider} from "src/authProvider";
-import {AppIcon} from "src/components/app-icon";
+import {authProvider} from "src/shared/api";
+import {AppIcon} from "src/shared/assets";
 import * as yup from "yup"
 import {useForm} from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import {titleStyles} from "@refinedev/mui/src/components/pages/auth/components/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import {BaseRecord, HttpError, LoginFormTypes, useActiveAuthProvider, useLogin, useTranslate} from "@refinedev/core";
@@ -17,8 +16,7 @@ import * as React from "react";
 const schema = yup.object().shape({
     email: yup.string().required(),
     password: yup.string().required(),
-})
-    .required()
+}).required()
 export default function Login() {
     const methods = useForm<BaseRecord, HttpError, LoginFormTypes>({
         defaultValues: {email: "", password: ""},

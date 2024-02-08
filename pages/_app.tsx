@@ -1,19 +1,17 @@
 import {Refine} from "@refinedev/core";
-import {DevtoolsPanel, DevtoolsProvider} from "@refinedev/devtools";
 import {RefineKbar, RefineKbarProvider} from "@refinedev/kbar";
 import routerProvider, {DocumentTitleHandler, UnsavedChangesNotifier,} from "@refinedev/nextjs-router";
 import type {NextPage} from "next";
 import {AppProps} from "next/app";
-import {Header} from "@components/header";
-import {ColorModeContextProvider} from "@contexts";
+import {Header} from "src/widgets/layouts";
+import {ColorModeContextProvider} from "src/shared/lib";
 import "@refinedev/antd/dist/reset.css";
-import {App as AntdApp} from "antd";
-import {authProvider} from "src/authProvider";
-import {dataProvider} from "src/dataProvider";
+import {authProvider, dataProvider} from "src/shared/api";
 import {appWithTranslation, useTranslation} from "next-i18next";
 import {notificationProvider, RefineSnackbarProvider, ThemedLayoutV2, ThemedTitleV2} from "@refinedev/mui";
-import {AppIcon} from "@components/app-icon";
+import {AppIcon} from "src/shared/assets";
 import {CssBaseline, GlobalStyles} from "@mui/material";
+import {RoutesConfig} from "../src/app/routes";
 
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -58,55 +56,13 @@ function MyApp({Component, pageProps}: AppPropsWithLayout): JSX.Element {
                     <CssBaseline/>
                     <GlobalStyles styles={{html: {WebkitFontSmoothing: "auto"}}}/>
                     <RefineSnackbarProvider>
-                        <DevtoolsProvider>
                             <Refine
                                 routerProvider={routerProvider}
                                 dataProvider={dataProvider(process.env.NEXT_PUBLIC_LIB_API_URL ?? "")}
                                 notificationProvider={notificationProvider}
                                 authProvider={authProvider}
                                 i18nProvider={i18nProvider}
-                                resources={[
-                                    {
-                                        name: "parameter",
-                                        list: "/parameter",
-                                        show: "/parameter/show/:id",
-                                        meta: {
-                                            canCreate: false,
-                                            canEdit: false,
-                                            canDelete: false,
-                                        },
-                                    },
-                                    {
-                                        name: "param_elevator",
-                                        list: "/param_elevator",
-                                        show: "/param_elevator/show/:id",
-                                        meta: {
-                                            canCreate: false,
-                                            canEdit: false,
-                                            canDelete: false,
-                                        },
-                                    },
-                                    {
-                                        name: "param_perevodnik",
-                                        list: "/param_perevodnik",
-                                        show: "/param_perevodnik/show/:id",
-                                        meta: {
-                                            canCreate: false,
-                                            canEdit: false,
-                                            canDelete: false,
-                                        },
-                                    },
-                                    {
-                                        name: "param_cable",
-                                        list: "/param_cable",
-                                        show: "/param_cable/show/:id",
-                                        meta: {
-                                            canCreate: false,
-                                            canEdit: false,
-                                            canDelete: false,
-                                        },
-                                    },
-                                ]}
+                                resources={RoutesConfig}
                                 options={{
                                     syncWithLocation: true,
                                     warnWhenUnsavedChanges: true,
@@ -119,11 +75,7 @@ function MyApp({Component, pageProps}: AppPropsWithLayout): JSX.Element {
                                 <UnsavedChangesNotifier/>
                                 <DocumentTitleHandler/>
                             </Refine>
-                            <DevtoolsPanel/>
-
-                        </DevtoolsProvider>
                     </RefineSnackbarProvider>
-
                 </ColorModeContextProvider>
             </RefineKbarProvider>
         </>

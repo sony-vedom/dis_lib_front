@@ -34,6 +34,7 @@
     "antd": "^5.13.3",
     "axios-auth-refresh": "^3.3.6",
     "https-proxy-agent": "^7.0.2",
+    "jwt-decode": "^4.0.0",
     "net": "^1.0.2",
     "next": "^13.0.6",
     "next-http-proxy-middleware": "^1.2.6",

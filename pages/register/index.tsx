@@ -2,8 +2,8 @@ import { AuthPage, ThemedTitleV2 } from "@refinedev/mui";
 
 import { GetServerSideProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { authProvider } from "src/authProvider";
-import { AppIcon } from "src/components/app-icon";
+import { authProvider } from "src/shared/api";
+import { AppIcon } from "src/shared/assets";
 
 export default function Register() {
   return (
