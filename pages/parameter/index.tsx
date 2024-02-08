@@ -116,7 +116,7 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
                                         if (el === "internal_coating" || "reinforcement") {
                                             return {
                                                 field: el,
-                                                value: value !== "" ? !!value ? value,
+                                                value: value !== "" ? !!value : value,
                                                 operator: "eq" as CrudOperators,
                                             }
                                         }
