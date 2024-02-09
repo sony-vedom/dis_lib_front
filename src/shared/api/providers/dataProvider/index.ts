@@ -50,6 +50,7 @@ export const dataProvider = (
         //   const { _sort, _order } = generatedSort;
         //   query.sort = `{"${_sort}": "${_order}"}`;
         // }
+
         const {data} = await httpClient[requestMethod](
             `${url}?${stringify(query)}`,
             // `${url}`,
@@ -69,12 +70,14 @@ export const dataProvider = (
         //     };
         // }
         //
+        if (["diameter_cable", "length_cut_cable", "type_dr"].includes(resource)) {
+            return data
+        }
         return {
             data: data.results,
             total: data.count,
         }
     },
-
     getMany: async ({resource, ids, meta}) => {
         const {headers, method} = meta ?? {};
         const requestMethod = (method as MethodTypes) ?? "get";

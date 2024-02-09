@@ -48,7 +48,6 @@ const refreshAuthLogic = async (failedRequest: any) => {
     }
 }
 
-// Instantiate the interceptor
 createAuthRefreshInterceptor(axiosInstance, refreshAuthLogic);
 
 export {axiosInstance};

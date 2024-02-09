@@ -6,7 +6,7 @@ interface getServerSidePropsHandlerParams {
     translateProps: SSRConfig
 }
 
-export const getServerSidePropsHandler = (params: getServerSidePropsHandlerParams) => {
+export const getServerSidePropsHandler = (params: getServerSidePropsHandlerParams, additionalProps?: any) => {
     const {redirectTo, translateProps, authenticated, routeName} = params
     if (!authenticated) {
         return {
@@ -22,6 +22,7 @@ export const getServerSidePropsHandler = (params: getServerSidePropsHandlerParam
 
     return {
         props: {
+            ...additionalProps,
             ...translateProps,
         },
     };
