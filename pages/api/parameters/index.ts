@@ -8,8 +8,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 message: r.data.message,
             })
         }).catch((e: AxiosError) => {
-            res.status(Number(e.status)).send({
-                message: "data" in e ? (e.data as { message: string }).message : "Ошибка",
+            if (e.response?.status === 409) {
+                res.status(e.response?.status).send({
+                    message: "response" in e ? (e.response?.data as {message: string}).message : "Ошибка",
+                })
+            }
+            // @ts-ignore
+            res.status(e.status).send({
+                message: "response" in e ? (e.response?.data as { message: string })?.message : "Ошибка",
             })
         })
     } else {

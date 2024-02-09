@@ -1,30 +1,19 @@
 import React, {useState} from "react";
-import {List, useDataGrid,} from "@refinedev/mui";
+import {List, useAutocomplete, useDataGrid} from "@refinedev/mui";
 import {GridColDef} from "@mui/x-data-grid";
-import {CrudFilters, type HttpError, IResourceComponentsProps, useList, useMany, useTranslate} from "@refinedev/core";
+import {CrudFilters, type HttpError, IResourceComponentsProps, useTranslate} from "@refinedev/core";
 import {getServerSidePropsHandler} from "../../src/shared/lib";
-import {Box} from "@mui/material";
+import {Autocomplete, Box} from "@mui/material";
 import {dataGridHookConfig, paramCableFactory} from "src/features/lib";
 import {ModalFilterForm, MuiDataGrid} from "src/shared/ui";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "../../src/shared/api";
-import {axiosInstance} from "../../src/shared/api/providers/dataProvider/utils";
 import Button from "@mui/material/Button";
 import {useForm} from "@refinedev/react-hook-form";
-import {lazy, number, object, string} from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
 import {CrudOperators} from "@refinedev/core/src/contexts/data/IDataContext";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import {FormProvider} from "react-hook-form";
-import nookies from "nookies";
-import {COOKIE_AUTH_ACCESS} from "../../src/shared/api/lib";
+import {Controller, FormProvider} from "react-hook-form";
 
-const schema = object({
-    type_dr: lazy((value) => (value === '' ? string().notRequired() : number().notRequired())),
-    diameter_cable: lazy((value) => (value === '' ? string().notRequired() : number().notRequired())),
-    length_cut_cable: lazy((value) => (value === '' ? string().notRequired() : number().notRequired())),
-})
 
 export const ParamCableList: React.FC<IResourceComponentsProps> = (props, context) => {
     const translate = useTranslate();
@@ -37,43 +26,36 @@ export const ParamCableList: React.FC<IResourceComponentsProps> = (props, contex
 
     const [open, setOpen] = useState<boolean>(false)
 
-    const {register, handleSubmit, formState, ...rest} = useForm<{
-        type_dr?: number | string
-        diameter_cable?: number | string
-        length_cut_cable?: number | string
+    const {register, handleSubmit, formState, control, ...rest} = useForm<{
+        type_dr?: ISelectData | null
+        diameter_cable?: ISelectData | null
+        length_cut_cable?: ISelectData | null
     }>({
-        resolver: yupResolver(schema),
-    });
-
-    const [selectState, setSelectState] = useState<number | string>("")
-    const [selectState2, setSelectState2] = useState<number | string>("")
-    const [selectState3, setSelectState3] = useState<number | string>("")
+        defaultValues: {
+            type_dr: null,
+            diameter_cable: null,
+            length_cut_cable: null,
+        }
+    })
 
     interface ISelectData {
         id: number;
         name: string;
     }
 
-    const {data: diameter_cable} = useMany<ISelectData[], HttpError>({
-        ids: [1],
+    const {autocompleteProps: diameter_cable} = useAutocomplete<ISelectData, HttpError>({
         resource: "diameter_cable"
     })
-    const {data: length_cut_cable} = useMany<ISelectData[], HttpError>({
-        ids: [1],
+
+
+    const {autocompleteProps: length_cut_cable} = useAutocomplete<ISelectData, HttpError>({
         resource: "length_cut_cable"
     })
 
-    const {data: type_dr} = useMany<ISelectData[], HttpError>({
-        ids: [1],
+    const {autocompleteProps: type_dr} = useAutocomplete<ISelectData, HttpError>({
         resource: "type_dr"
     })
 
-
-    const optionMapHandler = (obj?: ISelectData[]) => {
-        return obj?.map(({id, name}: { id: number, name: string }) => {
-            return <MenuItem key={id} value={id}>{name}</MenuItem>
-        })
-    }
     return (
         <>
             <List headerButtons={({defaultButtons}) => (
@@ -84,11 +66,9 @@ export const ParamCableList: React.FC<IResourceComponentsProps> = (props, contex
                     }}>Фильтры</Button>
                 </>
             )}>
-                <FormProvider register={register} handleSubmit={handleSubmit} formState={formState} {...rest}>
+                <FormProvider control={control} register={register} handleSubmit={handleSubmit}
+                              formState={formState} {...rest}>
                     <ModalFilterForm onClose={() => setOpen(false)} open={open} handleResetAdditional={() => {
-                        setSelectState("")
-                        setSelectState2("")
-                        setSelectState3("")
                         setFilters([])
 
                     }}>
@@ -102,73 +82,107 @@ export const ParamCableList: React.FC<IResourceComponentsProps> = (props, contex
                             }}
                             autoComplete="off"
                             onSubmit={handleSubmit((data) => {
-                                const filters = Object.entries(data).map(([el, value]) => {
-                                    return {
+                                const filters = Object.entries(data).flatMap(([el, data]) => {
+                                    return data && data?.id ? {
                                         field: el,
-                                        value: value,
+                                        value: data.id,
                                         operator: "eq" as CrudOperators,
-                                    }
-
+                                    } : []
                                 })
-                                console.log(data)
                                 setFilters(filters as CrudFilters)
                                 setOpen(false)
                             }, (errors) => {
-                                console.log(errors)
                             })}
                         >
-                            <TextField
-                                {...register("diameter_cable")}
-                                value={selectState}
-                                label={`${translate(`param_cable.fields.diameter`)}`}
-                                variant="outlined"
-                                size="small"
-                                margin={"none"}
-                                select
-                                helperText={" "}
-                                onChange={(e) => setSelectState(Number(e.target.value))}
-                            >
-                                {
-                                    diameter_cable
-                                        ? optionMapHandler(diameter_cable as unknown as ISelectData[] | undefined)
-                                        : <MenuItem value={"epmty"}>Данных нет</MenuItem>
-                                }
-                            </TextField>
-                            <TextField
-                                {...register("length_cut_cable")}
-                                value={selectState2}
-                                label={`${translate(`param_cable.fields.length_cut`)}`}
-                                variant="outlined"
-                                size="small"
-                                margin={"none"}
-                                select
-                                helperText={" "}
-                                onChange={(e) => setSelectState2(Number(e.target.value))}
-                            >
-                                {
-                                    length_cut_cable
-                                        ? optionMapHandler(length_cut_cable as unknown as ISelectData[] | undefined)
-                                        : <MenuItem value={"epmty"}>Данных нет</MenuItem>
 
-                                }
-                            </TextField>
-                            <TextField
-                                {...register("type_dr")}
-                                value={selectState3}
-                                label={`${translate(`param_cable.fields.typ_e`)}`}
-                                variant="outlined"
-                                size="small"
-                                margin={"none"}
-                                select
-                                helperText={" "}
-                                onChange={(e) => setSelectState3(Number(e.target.value))}
-                            >
-                                {
-                                    type_dr ?
-                                        optionMapHandler(type_dr as unknown as ISelectData[] | undefined)
-                                        : <MenuItem value={"epmty"}>Данных нет</MenuItem>
-                                }
-                            </TextField>
+                            <Controller
+                                control={control}
+                                name="length_cut_cable"
+                                render={({field}) => (
+                                    <Autocomplete
+                                        defaultValue={null}
+                                        {...length_cut_cable}
+                                        {...field}
+                                        onChange={(_, value) => {
+                                            field.onChange(value);
+                                        }}
+                                        getOptionLabel={({name}) => `${name}`}
+                                        isOptionEqualToValue={(option, value) =>
+                                            value === undefined || option?.id?.toString() === (value?.id ?? value)?.toString()
+                                        }
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={`${translate(`param_cable.fields.length_cut`)}`}
+                                                placeholder={`${translate(`param_cable.fields.length_cut`)}`}
+                                                variant="outlined"
+                                                size="small"
+                                                margin={"none"}
+                                                helperText={" "}
+                                            />
+                                        )}
+                                    />
+                                )}
+                            />
+                            <Controller
+                                control={control}
+                                name="diameter_cable"
+                                render={({field}) => (
+                                    <Autocomplete
+                                        {...diameter_cable}
+                                        {...field}
+                                        onChange={(_, value) => {
+                                            field.onChange(value);
+                                        }}
+                                        getOptionLabel={({name}) => `${name}`}
+                                        isOptionEqualToValue={(option, value) =>
+                                            value === undefined || option?.id?.toString() === (value?.id ?? value)?.toString()
+                                        }
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={`${translate(`param_cable.fields.diameter`)}`}
+                                                placeholder={`${translate(`param_cable.fields.diameter`)}`}
+                                                variant="outlined"
+                                                size="small"
+                                                margin={"none"}
+                                                helperText={" "}
+                                            />
+                                        )}
+                                    />
+                                )}
+                            />
+
+                            <Controller
+                                control={control}
+                                name="type_dr"
+                                render={({field}) => (
+                                    <Autocomplete
+                                        defaultValue={null}
+                                        {...type_dr}
+                                        {...field}
+                                        onChange={(_, value) => {
+                                            field.onChange(value);
+                                        }}
+                                        getOptionLabel={({name}) => `${name}`}
+                                        isOptionEqualToValue={(option, value) =>
+                                            value === undefined || option?.id?.toString() === (value?.id ?? value)?.toString()
+                                        }
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={`${translate(`param_cable.fields.typ_e`)}`}
+                                                placeholder={`${translate(`param_cable.fields.typ_e`)}`}
+                                                variant="outlined"
+                                                size="small"
+                                                margin={"none"}
+                                                helperText={" "}
+
+                                            />
+                                        )}
+                                    />
+                                )}
+                            />
                         </Box>
                     </ModalFilterForm>
                 </FormProvider>

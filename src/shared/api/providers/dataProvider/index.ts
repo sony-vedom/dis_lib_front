@@ -31,6 +31,7 @@ export const dataProvider = (
         interface IQuery {
             page?: number;
             page_size?: number;
+
             [key: string]: string | number | undefined;
         }
 
@@ -70,8 +71,11 @@ export const dataProvider = (
         //     };
         // }
         //
-        if (["diameter_cable", "length_cut_cable", "type_dr"].includes(resource)) {
-            return data
+        if (["diameter_cable", "length_cut_cable", "type_dr", "diameter_cable", "through_diameter", "type_pipe", "tonnage", "elevator_mark", "perevodnik_class", "kind_and_type_thread"].includes(resource)) {
+            return {
+                data: data,
+                total: data.length,
+            }
         }
         return {
             data: data.results,

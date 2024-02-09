@@ -128,12 +128,10 @@
     "param_perevodnik": "Переводники",
     "fields": {
       "id": "id",
-      "firstname": "имя",
-      "lastname": "фамилия",
-      "midname": "отчество",
-      "email": "почта",
-      "phone": "телефон",
-      "birthday": "дата рождения"
+      "class_perev": "Тип переводника",
+      "subclass_perev": "Подтип переводника",
+      "first": "Верх",
+      "second": "Низ"
     },
     "titles": {
       "create": "Создать переводник",

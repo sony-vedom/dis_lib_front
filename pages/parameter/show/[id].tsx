@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {IResourceComponentsProps, useNotification, useShow, useTranslate,} from "@refinedev/core";
+import {BaseRecord, IResourceComponentsProps, useNotification, useShow, useTranslate,} from "@refinedev/core";
 import {
     BooleanField,
     ListButton,
@@ -11,7 +11,7 @@ import {
 import {Stack, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import {getServerSidePropsHandler} from "../../../src/shared/lib";
 import {authProvider} from "../../../src/shared/api";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
@@ -37,33 +37,52 @@ export const ParameterShow: FC<IResourceComponentsProps> = () => {
 
     const record = data?.data;
     const clickHandler = () => {
-        fetchAddParam2({
-            ...record,
-            lock_thread: record?.lock_th,
-            lock_type: record?.lock_ty,
-            weight_foot: record?.weight
-        }).then((res) => {
-            open?.({
-                type: "success",
-                message: "Параметры трубы добавлены в Paradigma",
-                description: res?.data?.message,
-            })
-        }).catch((e: { message: string }) => {
-            const message = e.message
-            if (message === "Request failed with status code 500") {
-                open?.({
-                    type: "error",
-                    message: "Обратитесь к сотрудникам организации DIS",
-                    description: "Ошибка сервера",
-                })
-                return
-            }
-            open?.({
-                type: "error",
-                message,
-                description: "Ошибка добавления",
-            })
-        })
+       if (record) {
+           fetchAddParam2({
+               body: {
+                   "nominal_pipe_diameter": record.nominal_pipe_diameter,
+                   "weight_foot": record.weight,
+                   "reinforcement": record.reinforcement,
+                   "internal_coating": record.internal_coating,
+                   "pipe_inner_diameter": record.pipe_inner_diameter,
+                   "lock_outside_diameter": record.lock_outside_diameter,
+                   "lock_inner_diameter": record.lock_inner_diameter,
+                   "strength_group": record.strength,
+                   "size_range": record.size,
+                   "lock_thread": record.lock_th,
+                   "lock_type": record.lock_ty,
+                   "wall_thickness": record.wall_thickness,
+                   "length": record.length,
+                   "pipe_type":  record.pipe_t,
+                   "side_square": record.side_square,
+                   "sub_pipe_type":  record.sub_pipe_t,
+                   "name": record.name,
+               },
+               query: "parameter"
+           }).then((res) => {
+               open?.({
+                   type: "success",
+                   message: "Параметры добавлены в Paradigma",
+                   description: res?.data?.message,
+               })
+           }).catch((e: AxiosError) => {
+               console.log(e)
+               const message = (e.response?.data as { message: string }).message
+               if (message === "Request failed with status code 500") {
+                   open?.({
+                       type: "error",
+                       message: "Обратитесь к сотрудникам организации DIS",
+                       description: "Ошибка сервера",
+                   })
+                   return
+               }
+               open?.({
+                   type: "error",
+                   message,
+                   description: "Ошибка добавления",
+               })
+           })
+       }
     }
 
     return (

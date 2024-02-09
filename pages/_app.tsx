@@ -5,7 +5,6 @@ import type {NextPage} from "next";
 import {AppProps} from "next/app";
 import {Header} from "src/widgets/layouts";
 import {ColorModeContextProvider} from "src/shared/lib";
-import "@refinedev/antd/dist/reset.css";
 import {authProvider, dataProvider} from "src/shared/api";
 import {appWithTranslation, useTranslation} from "next-i18next";
 import {notificationProvider, RefineSnackbarProvider, ThemedLayoutV2, ThemedTitleV2} from "@refinedev/mui";
