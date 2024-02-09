@@ -67,6 +67,7 @@ export const ParameterShow: FC<IResourceComponentsProps> = () => {
     }
 
     return (
+        <>
         <Show isLoading={isLoading} headerButtons={({listButtonProps, refreshButtonProps}) => <>
             <ListButton {...listButtonProps}/><RefreshButton {...refreshButtonProps}/>
             <Button onClick={clickHandler}>
@@ -167,6 +168,7 @@ export const ParameterShow: FC<IResourceComponentsProps> = () => {
 
             </Stack>
         </Show>
+        </>
     );
 };
 

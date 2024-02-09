@@ -45,7 +45,7 @@ const schema = object({
     internal_coating: lazy((value) => (value === '' ? string().notRequired() : number().notRequired())),
 })
 
-export const ParameterList: React.FC<IResourceComponentsProps> = () => {
+const ParameterList: React.FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();
     const {dataGridProps, setFilters} = useDataGrid(dataGridHookConfig);
 
@@ -70,151 +70,10 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
     });
 
     return (
-        <List headerButtons={() => <Button variant="contained" onClick={() => setOpen(true)}>Фильтры</Button>}>
-            <Modal
-                open={open}
-                onClose={() =>
-                    setOpen(false)
-                }
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Grid item xs={12} lg={3}>
-                    <Card sx={{
-                        paddingX: {
-                            xs: 2, md: 0,
-                        },
-                        width: {
-                            xs: "calc(100vw - 64px)", md: "500px",
-                        },
-                        maxWidth: "500px",
-                        position: "absolute",
-                        top: "50%", right: "50%",
-                        transform: "translate(50%,-50%)",
-                    }}>
-                        <CardContent sx={{mt: "10px", pt: "0px"}}>
-                            <Box sx={{display: "flex", justifyContent: "space-between"}}>
-                                <h1>Фильтры</h1>
-                                <IconButton sx={{width: "50px", height: "50px"}}
-                                            onClick={
-                                                () => setOpen(false)
-                                            }>
-                                    <CloseIcon/>
-                                </IconButton>
-                            </Box>
-                            <Box
-                                name="filterForm"
-                                component="form"
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "5px"
-                                }}
-                                autoComplete="off"
-                                onSubmit={handleSubmit((data) => {
-                                    const filters = Object.entries(data).map(([el, value]) => {
-                                        if (el === "internal_coating" || "reinforcement") {
-                                            return {
-                                                field: el,
-                                                value: value !== "" ? !!value ? value,
-                                                operator: "eq" as CrudOperators,
-                                            }
-                                        }
-                                        return {
-                                            field: el,
-                                            value: value,
-                                            operator: "eq" as CrudOperators,
-                                        }
-                                    })
-                                    setFilters(filters as CrudFilters)
-                                })}
-                            >
-                                <TextField
-                                    {...register("nominal_pipe_diameter")}
-                                    label={`${translate(`parameter.fields.nominal_pipe_diameter`)}`}
-                                    placeholder={`${translate(`parameter.fields.nominal_pipe_diameter`)}`}
-                                    variant="outlined"
-                                    size="small"
-                                    margin={"none"}
-                                    error={!!formState.errors.nominal_pipe_diameter?.message}
-                                    helperText={!!formState.errors.nominal_pipe_diameter?.message ? formState.errors.nominal_pipe_diameter?.message as string : ' '}
-                                />
-                                <TextField
-                                    {...register("weight")}
-                                    label={`${translate(`parameter.fields.weight`)}`}
-                                    placeholder={`${translate(`parameter.fields.weight`)}`}
-                                    variant="outlined"
-                                    size="small"
-                                    margin={"none"}
-                                    error={!!formState.errors.weight?.message}
-                                    helperText={!!formState.errors.weight?.message ? formState.errors.weight?.message as string : ' '}
-                                />
-                                <TextField
-                                    {...register("reinforcement")}
-                                    value={selectState}
-                                    label={`${translate(`parameter.fields.reinforcement`)}`}
-                                    variant="outlined"
-                                    size="small"
-                                    margin={"none"}
-                                    select
-                                    helperText={" "}
-                                    onChange={(e) => setSelectState(Number(e.target.value))}
-                                >
-                                    <MenuItem value={1}>Есть</MenuItem>
-                                    <MenuItem value={0}>Нет</MenuItem>
-                                </TextField>
-                                <TextField
-                                    {...register("internal_coating")}
-                                    value={selectState2}
-                                    select
-                                    label={`${translate("parameter.fields.internal_coating")}`}
-                                    variant="outlined"
-                                    size="small"
-                                    margin={"none"}
-                                    helperText={' '}
-                                    onChange={(e) => setSelectState(Number(e.target.value))}
+        <>
 
-                                >
-                                    <MenuItem value={1}>Есть</MenuItem>
-                                    <MenuItem value={0}>Нет</MenuItem>
-                                </TextField>
-                                <TextField
-                                    {...register("pipe_inner_diameter")}
-                                    error={!!formState.errors.pipe_inner_diameter?.message}
-                                    helperText={!!formState.errors.pipe_inner_diameter?.message ? formState.errors.pipe_inner_diameter?.message as string : ' '}
-                                    label={`${translate(`parameter.fields.pipe_inner_diameter`)}`}
-                                    placeholder={`${translate(`parameter.fields.pipe_inner_diameter`)}`}
-                                    variant="outlined"
-                                    size="small"
-                                    margin={"none"}
-                                />
-                                <Box sx={{display: "grid", gap: "10px", gridTemplateColumns: "140px 1fr"}}>
-                                    <Button color={"error"} variant="contained">
-                                        Очистить
-                                    </Button>
-                                    <Button sx={{zIndex: 99}} type={"submit"} variant="contained">
-                                        Искать <SearchIcon/>
-                                    </Button>
-                                </Box>
-
-
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Modal>
-            <MuiDataGrid {...dataGridProps} columns={columns}/>
-        </List>
+       </>
     );
 };
 
 export default ParameterList
-
-export const getServerSideProps = async function (context: any) {
-    const {authenticated, redirectTo} = await authProvider.check(context);
-    const translateProps = await serverSideTranslations("ru", [
-        "common",
-    ]);
-
-    return getServerSidePropsHandler({authenticated, redirectTo, translateProps, routeName: "parameter"})
-}

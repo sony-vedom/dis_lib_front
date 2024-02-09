@@ -4,7 +4,6 @@ import {AuthBindingsCustom, IJwt, ILoginData, ILoginVar} from "./type";
 import {COOKIE_AUTH_ACCESS, COOKIE_AUTH_REFRESH} from "../../lib";
 import {dataProvider} from "../dataProvider";
 import {DBEntities} from "../dataProvider/types";
-import {jwtDecode} from "jwt-decode";
 
 export const authProvider: AuthBindingsCustom = {
     login: async ({email, password}) => {
@@ -91,14 +90,15 @@ export const authProvider: AuthBindingsCustom = {
         // if (auth) {
         //     const adminId = jwtDecode<IJwt>(auth)?.sub
         //
+        //
         //     const admin = await dataProvider(process.env.API_URL as string).getOne({
         //         resource: DBEntities.ADMINS,
-        //         id: adminId,
+        //         id: adminId.id,
         //     });
         //
         //     return admin.data;
         // }
-        return null;
+        // return null;
     },
     onError: async (error) => {
         return {error};
