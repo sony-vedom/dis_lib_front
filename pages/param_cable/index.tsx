@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {List, useAutocomplete, useDataGrid} from "@refinedev/mui";
 import {GridColDef} from "@mui/x-data-grid";
-import {CrudFilters, type HttpError, IResourceComponentsProps, useTranslate} from "@refinedev/core";
+import {CrudFilters, type HttpError, IResourceComponentsProps, useTranslate, type CrudOperators} from "@refinedev/core";
 import {getServerSidePropsHandler} from "../../src/shared/lib";
 import {Autocomplete, Box} from "@mui/material";
 import {dataGridHookConfig, paramCableFactory} from "src/features/lib";
@@ -10,7 +10,6 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {authProvider} from "../../src/shared/api";
 import Button from "@mui/material/Button";
 import {useForm} from "@refinedev/react-hook-form";
-import {CrudOperators} from "@refinedev/core/src/contexts/data/IDataContext";
 import TextField from "@mui/material/TextField";
 import {Controller, FormProvider} from "react-hook-form";
 

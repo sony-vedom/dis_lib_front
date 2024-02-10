@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {List, useAutocomplete, useDataGrid,} from "@refinedev/mui";
 import {GridColDef} from "@mui/x-data-grid";
 import {ModalFilterForm, MuiDataGrid} from "src/shared/ui";
-import {CrudFilters, type HttpError, IResourceComponentsProps, useTranslate} from "@refinedev/core";
+import {CrudFilters, type HttpError, IResourceComponentsProps, useTranslate, type CrudOperators} from "@refinedev/core";
 import {getServerSidePropsHandler} from "../../src/shared/lib";
 import {dataGridHookConfig, elevatorFactory} from "src/features/lib";
 import {authProvider} from "../../src/shared/api";
@@ -10,10 +10,9 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import Button from "@mui/material/Button";
 import {useForm} from "@refinedev/react-hook-form";
 import {Autocomplete, Box} from "@mui/material";
-import {CrudOperators} from "@refinedev/core/src/contexts/data/IDataContext";
 import {Controller, FormProvider} from "react-hook-form";
 import TextField from "@mui/material/TextField";
-import {string} from "yup";
+
 
 export const ParamElevatorList: React.FC<IResourceComponentsProps> = () => {
     const translate = useTranslate();

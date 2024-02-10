@@ -1,10 +1,9 @@
 import nookies from "nookies";
 import axios, {AxiosResponse} from "axios";
-import {ILoginData, ILoginVar} from "./type";
+import {AuthBindingsCustom, ILoginData, ILoginVar} from "./type";
 import {COOKIE_AUTH_ACCESS, COOKIE_AUTH_REFRESH} from "../../lib";
-import { AuthProvider } from "@refinedev/core";
 
-export const authProvider: AuthProvider = {
+export const authProvider: AuthBindingsCustom  = {
     login: async ({email, password}) => {
         try {
             const {
@@ -42,6 +41,23 @@ export const authProvider: AuthProvider = {
                     message: "Некорректное имя пользовательвателя или пароль",
                 },
             };
+        }
+    },
+    refresh: async (responseUrl) => {
+        console.log(nookies.get(null))
+        const {
+            data: {
+                access
+            },
+        } = await axios.post<ILoginData>(`${process.env.NEXT_PUBLIC_LIB_API_URL}/token/refresh/`, {
+            "refresh": nookies.get(null)?.[COOKIE_AUTH_REFRESH]
+        }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        if (access) {
+            nookies.set(null, COOKIE_AUTH_REFRESH, access);
         }
     },
     logout: async () => {

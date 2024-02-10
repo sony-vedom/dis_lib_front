@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {List, useDataGrid} from "@refinedev/mui";
 import {GridColDef} from "@mui/x-data-grid";
-import {CrudFilters, IResourceComponentsProps, useTranslate,} from "@refinedev/core";
+import {CrudFilters, IResourceComponentsProps, useTranslate, type CrudOperators} from "@refinedev/core";
 import {ModalFilterForm, MuiDataGrid} from "src/shared/ui";
 import {dataGridHookConfig, parameterFactory} from "src/features/lib";
 import {getServerSidePropsHandler} from "src/shared/lib"
@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from "@mui/material/TextField";
 import {lazy, number, object, string} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup"
-import {type CrudOperators} from "@refinedev/core/src/contexts/data/IDataContext";
+
 
 const schema = object({
     nominal_pipe_diameter: string().test(
