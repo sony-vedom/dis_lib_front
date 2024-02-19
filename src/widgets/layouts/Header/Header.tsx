@@ -23,6 +23,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     return (
         <AppBar position={sticky ? "sticky" : "relative"}>
             <Toolbar>
+                <iframe src="http://localhost:3000/paradigma_logo.svg" width="100" height="100" title="Paradigma"></iframe>
                 <Stack direction="row" width="100%" alignItems="center">
                     <HamburgerMenu/>
                     <Stack
