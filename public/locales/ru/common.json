@@ -176,6 +176,7 @@
   "parameter": {
     "parameter": "Трубы",
     "fields": {
+      "type_shoulder_pad": "Тип заплечника",
       "nominal_pipe_diameter": "Номинальный диаметр трубы",
       "reinforcement": "Армирование",
       "internal_coating": "Внутреннее покрытие",

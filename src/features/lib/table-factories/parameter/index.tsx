@@ -170,6 +170,17 @@ export const parameterFactory: TTableFactory = (translate) => () => [
         disableColumnMenu: true,
     },
     {
+        field: "type_shoulder_pad",
+        flex: 1,
+        headerName: translate("parameter.fields.type_shoulder_pad"),
+        minWidth: 140,
+        maxWidth: 140,
+        align: "right",
+        headerAlign: "right",
+        sortable: false,
+        disableColumnMenu: true,
+    },
+    {
         field: "wall_thickness",
         flex: 1,
         headerName: translate("parameter.fields.wall_thickness"),
